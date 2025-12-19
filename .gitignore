@@ -1,139 +1,49 @@
 # AI4SE If Predictor - .gitignore
 # Prevents large data files and temporary files from being pushed
 
-# ============================================================================
-# DATASETS (TOO LARGE - Users should download separately)
-# ============================================================================
-data/raw/
-data/processed/
-data/results/
-*.npz
-*.zip
-*.tar.gz
-
-
-# ============================================================================
-# MODEL CHECKPOINTS (Can be regenerated)
-# ============================================================================
-models/*.pkl
-models/*.pth
-models/*.h5
-models/*.onnx
-*.pkl
-*.pth
-
-# ============================================================================
-# EVALUATION OUTPUTS
-# ============================================================================
-visualizations/
-results/
-outputs/
-logs/
-*.png
-*.jpg
-*.jpeg
-*.pdf
-
-# ============================================================================
-# PYTHON
-# ============================================================================
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-
-# Virtual environments
+.Python
 venv/
-.venv/
 env/
 ENV/
-virtualenv/
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
+dist/
+build/
 
-# PyInstaller
-*.manifest
-*.spec
+# Data and Models (too large for git)
+data/
+models/
+output/
+test_data/
+test_models/
+test_output/
 
-# Unit test / coverage
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.pytest_cache/
+# Logs
+*.log
+*.pid
+*.out
+*.err
+nohup.out
 
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb
-
-# ============================================================================
-# IDE / EDITORS
-# ============================================================================
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+
+# OS
 .DS_Store
 Thumbs.db
 
-# PyCharm
-.idea/
-*.iml
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
 
-# VS Code
-.vscode/
-*.code-workspace
-
-# ============================================================================
-# OPERATING SYSTEM
-# ============================================================================
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# Linux
-*~
-
-# ============================================================================
-# TEMPORARY FILES
-# ============================================================================
-*.log
-*.tmp
-*.temp
-tmp/
-temp/
-
-# ============================================================================
-# DOCUMENTATION BUILD
-# ============================================================================
-docs/_build/
-site/
+# Backups
+*.backup
+*.bak
