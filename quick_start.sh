@@ -1,6 +1,5 @@
 #!/bin/bash
 # Quick Start Script for AI4SE IF Prediction Pipeline
-# Run this on th121-18 or th121-19
 
 set -e  # Exit on error
 
