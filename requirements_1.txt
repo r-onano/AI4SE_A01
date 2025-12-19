@@ -1,0 +1,27 @@
+# Core Dependencies for AI4SE IF Statement Predictor
+# Python 3.10+ required
+
+# Data Collection
+requests==2.31.0
+tqdm==4.66.1
+
+# Code Parsing
+tree-sitter==0.21.3
+tree-sitter-languages==1.10.2
+
+# Tokenization
+tokenizers==0.15.0
+
+# Machine Learning
+torch==2.1.2
+transformers==4.36.2
+datasets==2.16.1
+accelerate==0.25.0
+
+# Data Processing
+pandas==2.1.4
+numpy==1.26.3
+
+# Utilities
+scipy==1.11.4
+scikit-learn==1.3.2
