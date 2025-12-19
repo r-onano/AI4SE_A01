@@ -324,37 +324,6 @@ df -h
 tail -100 pipeline.log
 ```
 
-## Expected Results
-
-After successful completion, you should see:
-
-```
-✅ PIPELINE COMPLETE!
-
-Results available in: output/
-  - generated-testset.csv    (predictions on your test set)
-  - provided-testset.csv     (predictions on benchmark)
-  - metrics.json             (accuracy metrics)
-```
-
-**Typical accuracy**: 30-45% exact match
-
-This may seem low, but IF condition prediction is genuinely difficult! The model must understand:
-- Available variables and their types
-- Program logic and control flow
-- Common programming patterns
-- Semantic meaning, not just syntax
-
-## Submitting Results
-
-For assignment submission, include:
-
-1. **GitHub repository link**: https://github.com/r-onano/AI4SE_A01.git
-2. **Required CSV files**:
-   - `output/generated-testset.csv`
-   - `output/provided-testset.csv`
-3. **Documentation**: Your project report (separate document)
-
 ## Additional Information
 
 ### GPU Recommendations
@@ -390,7 +359,7 @@ We use tree-sitter for code parsing because:
 - Handles multi-line statements correctly
 - Language-aware parsing
 
-This was critical for achieving 97% masking success (vs 1.2% with regex).
+This was critical for achieving 85% masking success (vs 1.2% with regex).
 
 ## Getting Help
 
@@ -400,21 +369,6 @@ If you encounter issues:
 2. Review the pipeline.log for error messages
 3. Verify all dependencies are installed correctly
 4. Check available disk space and memory
-
-## Technical Notes
-
-### Why Pre-training + Fine-tuning?
-
-- **Pre-training**: Model learns general Python syntax and patterns
-- **Fine-tuning**: Model specializes on IF condition prediction
-- This two-stage approach is more effective than training directly on the task
-
-### Why Custom Tokenizer?
-
-- Code has different patterns than natural language
-- Code-specific vocabulary (snake_case, operators, keywords)
-- Learns efficient representations of code tokens
-- Required by assignment specifications
 
 ### Model Architecture
 
