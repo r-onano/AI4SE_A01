@@ -51,8 +51,6 @@ source venv/bin/activate
 # Your prompt should now show (venv) at the beginning
 ```
 
-**Important**: Always activate the virtual environment before running the code!
-
 ### Step 3: Install Dependencies
 
 With the virtual environment activated, install all required packages:
@@ -70,7 +68,7 @@ This will install:
 - pandas, numpy (data processing)
 - And other required dependencies
 
-**Note**: Installation may take 5-10 minutes depending on your internet connection.
+**Note**: Installation may take 5-10 minutes depending on the internet connection.
 
 ### Step 4: Verify Installation
 
@@ -209,43 +207,28 @@ The pipeline checks for:
 - ✅ Existing pre-trained model → Skip pre-training
 - ✅ Existing fine-tuned model → Skip fine-tuning
 
-## Monitoring Training
-
-### Viewing Progress
-
-```bash
-# Watch log in real-time
-tail -f pipeline.log
-
-# Check specific stages
-grep "STEP" pipeline.log
-
-# Check accuracy results
-grep "Accuracy" pipeline.log
-```
-
 ### Understanding Output
 
 During training, you'll see:
 
 ```
 STEP 4: MODEL PRE-TRAINING
-✅ Model: 60,123,456 parameters
-🚀 Starting pre-training...
+Model: 60,123,456 parameters
+Starting pre-training...
   4%|▎   | 1096/30951 [08:15<3:44:45, 2.21it/s]
 {'loss': 2.345, 'epoch': 0.1}
 {'loss': 1.987, 'epoch': 0.3}  ← Loss should decrease!
 ```
 
 **Good signs**:
-- ✅ Loss decreasing over time
-- ✅ Speed consistent (1-3 iterations/second)
-- ✅ No CUDA out of memory errors
+- Loss decreasing over time
+- Speed consistent (1-3 iterations/second)
+- No CUDA out of memory errors
 
 **Warning signs**:
-- ⚠️ Loss not decreasing (stuck)
-- ⚠️ Very slow speed (<0.5 it/s)
-- ⚠️ CUDA errors
+- Loss not decreasing (stuck)
+- Very slow speed (<0.5 it/s)
+- CUDA errors
 
 ## Configuration and Customization
 
@@ -340,16 +323,16 @@ tail -100 pipeline.log
 | A100 GPU | 6-8 hours |
 | RTX 4090 | 8-10 hours |
 | RTX 3080 | 10-14 hours |
-| CPU only | 3-5 days ⚠️ |
+| CPU only | 3-5 days |
 
 ### Dataset Quality Notes
 
 The pipeline includes several quality filters:
-- ✅ Only permissively licensed repositories
-- ✅ Valid Python syntax (parsed successfully)
-- ✅ Functions with IF statements
-- ✅ Reasonable function length (5-500 lines)
-- ✅ High-quality masking (97% success rate)
+- Only permissively licensed repositories
+- Valid Python syntax (parsed successfully)
+- Functions with IF statements
+- Reasonable function length (5-500 lines)
+- High-quality masking (85% success rate)
 
 ### Why Tree-Sitter?
 
