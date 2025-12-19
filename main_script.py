@@ -116,7 +116,7 @@ def get_python_parser():
         parser.set_language(py_lang)
         return parser, py_lang
     except Exception as e:
-        print(f"❌ Parser initialization error: {e}")
+        print(f" Parser initialization error: {e}")
         return None, None
 
 
@@ -146,13 +146,13 @@ class DataCollector:
             with open(config.RAW_FUNCTIONS_FILE, 'r') as f:
                 count = sum(1 for _ in f)
             if count >= config.TOTAL_FUNCTIONS_TARGET:
-                print(f"✅ Data collection: SKIPPED ({count:,} functions already collected)")
+                print(f" Data collection: SKIPPED ({count:,} functions already collected)")
                 return True
         return False
     
     def discover_repos(self) -> List[Dict]:
         """Discover Python repositories on GitHub"""
-        print(f"🔍 Discovering up to {config.MAX_REPOS} repositories...")
+        print(f" Discovering up to {config.MAX_REPOS} repositories...")
         repos = []
         page = 1
         
@@ -171,7 +171,7 @@ class DataCollector:
                     response = self.session.get(url, params=params, timeout=30)
                     
                     if response.status_code == 403:
-                        print("\n⏳ Rate limit hit, waiting 60s...")
+                        print("\n Rate limit hit, waiting 60s...")
                         import time
                         time.sleep(60)
                         continue
@@ -207,7 +207,7 @@ class DataCollector:
                     time.sleep(0.5)  # Rate limiting
                     
                 except Exception as e:
-                    print(f"\n❌ Error discovering repos: {e}")
+                    print(f"\n Error discovering repos: {e}")
                     break
         
         return repos
@@ -328,11 +328,11 @@ class DataCollector:
         
         # Discover repositories
         repos = self.discover_repos()
-        print(f"✅ Found {len(repos)} repositories")
+        print(f"Found {len(repos)} repositories")
         
         # Harvest functions
         all_functions = []
-        print(f"\n⛏️ Harvesting functions from {len(repos)} repositories...")
+        print(f"\n Harvesting functions from {len(repos)} repositories...")
         
         with tqdm(total=len(repos), desc="Harvesting repos") as pbar:
             for repo in repos:
@@ -349,12 +349,12 @@ class DataCollector:
             func['id'] = hashlib.sha256(f"{i}:{func['code'][:100]}".encode()).hexdigest()
         
         # Save to file
-        print(f"\n💾 Saving {len(all_functions):,} functions...")
+        print(f"\n Saving {len(all_functions):,} functions...")
         with open(config.RAW_FUNCTIONS_FILE, 'w') as f:
             for func in all_functions:
                 f.write(json.dumps(func) + '\n')
         
-        print(f"✅ Data collection complete: {len(all_functions):,} functions")
+        print(f" Data collection complete: {len(all_functions):,} functions")
 
 
 # ===================== STEP 2: TOKENIZER TRAINING =====================
@@ -364,7 +364,7 @@ class TokenizerTrainer:
     def should_skip(self) -> bool:
         """Check if tokenizer training can be skipped"""
         if (config.TOKENIZER_DIR / "tokenizer.json").exists():
-            print("✅ Tokenizer training: SKIPPED (already exists)")
+            print(" Tokenizer training: SKIPPED (already exists)")
             return True
         return False
     
@@ -378,17 +378,17 @@ class TokenizerTrainer:
         print("="*80)
         
         # Load code corpus
-        print("📂 Loading code corpus...")
+        print(" Loading code corpus...")
         corpus = []
         with open(config.RAW_FUNCTIONS_FILE, 'r') as f:
             for line in f:
                 func = json.loads(line)
                 corpus.append(func['code'])
         
-        print(f"✅ Loaded {len(corpus):,} functions")
+        print(f" Loaded {len(corpus):,} functions")
         
         # Initialize tokenizer
-        print("\n🔧 Training BPE tokenizer...")
+        print("\n Training BPE tokenizer...")
         tokenizer = Tokenizer(models.BPE(unk_token=config.UNK_TOKEN))
         tokenizer.normalizer = normalizers.NFKC()
         tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=False)
@@ -417,7 +417,7 @@ class TokenizerTrainer:
         config.TOKENIZER_DIR.mkdir(parents=True, exist_ok=True)
         tokenizer.save(str(config.TOKENIZER_DIR / "tokenizer.json"))
         
-        print(f"✅ Tokenizer trained: vocab_size={config.VOCAB_SIZE}")
+        print(f" Tokenizer trained: vocab_size={config.VOCAB_SIZE}")
 
 
 # ===================== STEP 3: DATA PREPROCESSING =====================
@@ -433,7 +433,7 @@ class DataPreprocessor:
             config.FINETUNE_TEST_FILE
         ]
         if all(f.exists() for f in required_files):
-            print("✅ Data preprocessing: SKIPPED (data files exist)")
+            print(" Data preprocessing: SKIPPED (data files exist)")
             return True
         return False
     
@@ -529,28 +529,28 @@ class DataPreprocessor:
         print("="*80)
         
         # Load all functions
-        print("📂 Loading functions...")
+        print(" Loading functions...")
         functions = []
         with open(config.RAW_FUNCTIONS_FILE, 'r') as f:
             for line in f:
                 functions.append(json.loads(line))
         
-        print(f"✅ Loaded {len(functions):,} functions")
+        print(f" Loaded {len(functions):,} functions")
         
         # Split data
         random.shuffle(functions)
         pretrain_funcs = functions[:config.PRETRAIN_TARGET]
         finetune_funcs = functions[config.PRETRAIN_TARGET:config.PRETRAIN_TARGET + config.FINETUNE_TARGET]
         
-        print(f"\n📦 Split: {len(pretrain_funcs):,} pre-train, {len(finetune_funcs):,} fine-tune")
+        print(f"\n Split: {len(pretrain_funcs):,} pre-train, {len(finetune_funcs):,} fine-tune")
         
         # Create pre-training examples
         pretrain_examples = self.create_pretrain_examples(pretrain_funcs)
-        print(f"✅ Created {len(pretrain_examples):,} pre-training examples")
+        print(f" Created {len(pretrain_examples):,} pre-training examples")
         
         # Create fine-tuning examples
         finetune_examples = self.create_finetune_examples(finetune_funcs)
-        print(f"✅ Created {len(finetune_examples):,} fine-tuning examples")
+        print(f" Created {len(finetune_examples):,} fine-tuning examples")
         
         # Split fine-tuning data
         random.shuffle(finetune_examples)
@@ -561,13 +561,13 @@ class DataPreprocessor:
         val_examples = finetune_examples[train_size:train_size + val_size]
         test_examples = finetune_examples[train_size + val_size:]
         
-        print(f"\n✂️ Fine-tuning split:")
+        print(f"\n Fine-tuning split:")
         print(f"   Train: {len(train_examples):,}")
         print(f"   Val:   {len(val_examples):,}")
         print(f"   Test:  {len(test_examples):,}")
         
         # Save datasets
-        print("\n💾 Saving datasets...")
+        print("\n Saving datasets...")
         
         with open(config.PRETRAIN_DATA_FILE, 'w') as f:
             for ex in pretrain_examples:
@@ -585,7 +585,7 @@ class DataPreprocessor:
             for ex in test_examples:
                 f.write(json.dumps(ex) + '\n')
         
-        print("✅ Preprocessing complete")
+        print(" Preprocessing complete")
 
 
 # ===================== STEP 4: MODEL PRE-TRAINING =====================
@@ -595,7 +595,7 @@ class ModelPretrainer:
     def should_skip(self) -> bool:
         """Check if pre-training can be skipped"""
         if (config.PRETRAINED_MODEL_DIR / "pytorch_model.bin").exists():
-            print("✅ Pre-training: SKIPPED (model exists)")
+            print(" Pre-training: SKIPPED (model exists)")
             return True
         return False
     
@@ -609,7 +609,7 @@ class ModelPretrainer:
         print("="*80)
         
         # Load tokenizer
-        print("📂 Loading tokenizer...")
+        print(" Loading tokenizer...")
         tokenizer = T5TokenizerFast(tokenizer_file=str(config.TOKENIZER_DIR / "tokenizer.json"))
         tokenizer.pad_token = config.PAD_TOKEN
         tokenizer.eos_token = config.EOS_TOKEN
@@ -628,16 +628,16 @@ class ModelPretrainer:
         )
         
         model = T5ForConditionalGeneration(model_config)
-        print(f"✅ Model: {sum(p.numel() for p in model.parameters()):,} parameters")
+        print(f" Model: {sum(p.numel() for p in model.parameters()):,} parameters")
         
         # Load dataset
-        print("\n📂 Loading pre-training data...")
+        print("\n Loading pre-training data...")
         examples = []
         with open(config.PRETRAIN_DATA_FILE, 'r') as f:
             for line in f:
                 examples.append(json.loads(line))
         
-        print(f"✅ Loaded {len(examples):,} examples")
+        print(f" Loaded {len(examples):,} examples")
         
         # Tokenize
         def tokenize_function(examples_batch):
@@ -700,15 +700,15 @@ class ModelPretrainer:
         )
         
         # Train
-        print("\n🚀 Starting pre-training...")
+        print("\n Starting pre-training...")
         trainer.train()
         
         # Save
-        print("\n💾 Saving pre-trained model...")
+        print("\n Saving pre-trained model...")
         trainer.save_model(str(config.PRETRAINED_MODEL_DIR))
         tokenizer.save_pretrained(str(config.PRETRAINED_MODEL_DIR))
         
-        print("✅ Pre-training complete")
+        print(" Pre-training complete")
 
 
 # ===================== STEP 5: MODEL FINE-TUNING =====================
@@ -718,7 +718,7 @@ class ModelFinetuner:
     def should_skip(self) -> bool:
         """Check if fine-tuning can be skipped"""
         if (config.FINETUNED_MODEL_DIR / "pytorch_model.bin").exists():
-            print("✅ Fine-tuning: SKIPPED (model exists)")
+            print(" Fine-tuning: SKIPPED (model exists)")
             return True
         return False
     
@@ -732,12 +732,12 @@ class ModelFinetuner:
         print("="*80)
         
         # Load pre-trained model
-        print("📂 Loading pre-trained model...")
+        print(" Loading pre-trained model...")
         model = T5ForConditionalGeneration.from_pretrained(str(config.PRETRAINED_MODEL_DIR))
         tokenizer = T5TokenizerFast.from_pretrained(str(config.PRETRAINED_MODEL_DIR))
         
         # Load datasets
-        print("\n📂 Loading fine-tuning data...")
+        print("\n Loading fine-tuning data...")
         
         def load_dataset_file(filepath):
             examples = []
@@ -749,7 +749,7 @@ class ModelFinetuner:
         train_examples = load_dataset_file(config.FINETUNE_TRAIN_FILE)
         val_examples = load_dataset_file(config.FINETUNE_VAL_FILE)
         
-        print(f"✅ Train: {len(train_examples):,}, Val: {len(val_examples):,}")
+        print(f" Train: {len(train_examples):,}, Val: {len(val_examples):,}")
         
         # Tokenize
         def tokenize_function(examples_batch):
@@ -814,15 +814,15 @@ class ModelFinetuner:
         )
         
         # Train
-        print("\n🚀 Starting fine-tuning...")
+        print("\n Starting fine-tuning...")
         trainer.train()
         
         # Save
-        print("\n💾 Saving fine-tuned model...")
+        print("\n Saving fine-tuned model...")
         trainer.save_model(str(config.FINETUNED_MODEL_DIR))
         tokenizer.save_pretrained(str(config.FINETUNED_MODEL_DIR))
         
-        print("✅ Fine-tuning complete")
+        print(" Fine-tuning complete")
 
 
 # ===================== STEP 6: EVALUATION =====================
@@ -836,7 +836,7 @@ class ModelEvaluator:
     def load_model(self):
         """Load fine-tuned model"""
         if self.model is None:
-            print("📂 Loading fine-tuned model...")
+            print(" Loading fine-tuned model...")
             self.model = T5ForConditionalGeneration.from_pretrained(str(config.FINETUNED_MODEL_DIR))
             self.tokenizer = T5TokenizerFast.from_pretrained(str(config.FINETUNED_MODEL_DIR))
             self.model.eval()
@@ -881,7 +881,7 @@ class ModelEvaluator:
         results = []
         metrics = {'exact_match': 0, 'total': 0}
         
-        print(f"\n🔮 Generating predictions for {len(examples):,} examples...")
+        print(f"\n Generating predictions for {len(examples):,} examples...")
         
         for ex in tqdm(examples):
             input_text = ex['input']
@@ -909,7 +909,7 @@ class ModelEvaluator:
         df = pd.DataFrame(results)
         df.to_csv(output_file, index=False)
         
-        print(f"✅ Accuracy: {accuracy*100:.2f}% ({metrics['exact_match']}/{metrics['total']})")
+        print(f" Accuracy: {accuracy*100:.2f}% ({metrics['exact_match']}/{metrics['total']})")
         
         return {'accuracy': accuracy, 'exact_match': metrics['exact_match'], 'total': metrics['total']}
     
@@ -920,7 +920,7 @@ class ModelEvaluator:
         print("="*80)
         
         # Evaluate on generated test set
-        print("\n📊 Evaluating on generated test set...")
+        print("\n Evaluating on generated test set...")
         generated_results = self.evaluate_dataset(
             config.FINETUNE_TEST_FILE,
             config.OUTPUT_DIR / "generated-testset.csv"
@@ -928,7 +928,7 @@ class ModelEvaluator:
         
         # Evaluate on provided benchmark
         if config.BENCHMARK_FILE.exists():
-            print("\n📊 Evaluating on provided benchmark...")
+            print("\n Evaluating on provided benchmark...")
             
             # Load benchmark
             df_benchmark = pd.read_csv(config.BENCHMARK_FILE)
@@ -987,7 +987,7 @@ class ModelEvaluator:
             # Clean up
             temp_benchmark.unlink()
         else:
-            print("⚠️ Benchmark file not found")
+            print(" Benchmark file not found")
             benchmark_results = None
         
         # Save metrics
@@ -999,8 +999,8 @@ class ModelEvaluator:
         with open(config.OUTPUT_DIR / "metrics.json", 'w') as f:
             json.dump(all_metrics, f, indent=2)
         
-        print("\n✅ Evaluation complete!")
-        print(f"📄 Results saved to {config.OUTPUT_DIR}")
+        print("\n Evaluation complete!")
+        print(f" Results saved to {config.OUTPUT_DIR}")
 
 
 # ===================== MAIN PIPELINE =====================
@@ -1039,7 +1039,7 @@ def main():
         evaluator.evaluate()
         
         print("\n" + "="*80)
-        print("✅ PIPELINE COMPLETE!")
+        print(" PIPELINE COMPLETE!")
         print("="*80)
         print(f"\nResults available in: {config.OUTPUT_DIR}")
         print(f"  - generated-testset.csv")
@@ -1047,9 +1047,9 @@ def main():
         print(f"  - metrics.json")
         
     except KeyboardInterrupt:
-        print("\n\n⚠️ Pipeline interrupted by user")
+        print("\n\n Pipeline interrupted by user")
     except Exception as e:
-        print(f"\n\n❌ Pipeline failed: {e}")
+        print(f"\n\n Pipeline failed: {e}")
         import traceback
         traceback.print_exc()
 
