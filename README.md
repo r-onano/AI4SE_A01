@@ -201,11 +201,11 @@ python main_script.py
 ```
 
 The pipeline checks for:
-- ✅ Existing data files → Skip data collection
-- ✅ Existing tokenizer → Skip tokenizer training
-- ✅ Existing preprocessed data → Skip preprocessing
-- ✅ Existing pre-trained model → Skip pre-training
-- ✅ Existing fine-tuned model → Skip fine-tuning
+-  Existing data files → Skip data collection
+-  Existing tokenizer → Skip tokenizer training
+-  Existing preprocessed data → Skip preprocessing
+-  Existing pre-trained model → Skip pre-training
+-  Existing fine-tuned model → Skip fine-tuning
 
 ### Understanding Output
 
