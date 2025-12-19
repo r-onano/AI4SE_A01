@@ -1,4 +1,4 @@
-# Energy-Aware AV Perception - .gitignore
+# AI4SE If Predictor - .gitignore
 # Prevents large data files and temporary files from being pushed
 
 # ============================================================================
@@ -11,13 +11,6 @@ data/results/
 *.zip
 *.tar.gz
 
-# KITTI dataset
-kitti/
-KITTI/
-
-# BDD100K dataset
-bdd100k/
-BDD100K/
 
 # ============================================================================
 # MODEL CHECKPOINTS (Can be regenerated)
@@ -144,12 +137,3 @@ temp/
 # ============================================================================
 docs/_build/
 site/
-
-# ============================================================================
-# EXCEPTIONS (Files to keep despite above rules)
-# ============================================================================
-# Keep example config
-!config_multi_dataset.yaml
-
-# Keep sample visualizations in docs (if any)
-# !docs/images/*.png
